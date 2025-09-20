@@ -292,8 +292,13 @@ class Display
         echo $r->render($bottom, $style) . "\n";
     }
 
-    /** 簡易テーブル表示（2次元配列） */
-    public function table(array $rows, ?Style $style = null): void
+    /**
+     * 簡易テーブル表示（2次元配列）
+     * @param array $rows テーブルデータ（2次元配列）
+     * @param Style|null $style スタイル
+     * @param bool $hasHeader 先頭行をヘッダーとして扱うか
+     */
+    public function table(array $rows, ?Style $style = null, bool $hasHeader = false): void
     {
         $renderer = $this->renderer;
         $ar = new AnsiRenderer();
@@ -305,7 +310,7 @@ class Display
                 if (!isset($widths[$i]) || $w > $widths[$i]) $widths[$i] = $w;
             }
         }
-        // 行描画
+        $rowIndex = 0;
         foreach ($rows as $r) {
             $line = '';
             foreach ($r as $i => $c) {
@@ -313,9 +318,18 @@ class Display
                 $pad = $widths[$i] - $ar->strWidth($s);
                 $line .= ' ' . $s . str_repeat(' ', $pad) . ' |';
             }
-            // trim trailing |
             $line = rtrim($line, ' |');
             echo $renderer->render($line, $style) . "\n";
+            // ヘッダー行の下に区切り線を出力
+            if ($hasHeader && $rowIndex === 0) {
+                $sep = '';
+                foreach ($widths as $w) {
+                    $sep .= ' ' . str_repeat('-', $w) . ' |';
+                }
+                $sep = rtrim($sep, ' |');
+                echo $renderer->render($sep, $style) . "\n";
+            }
+            $rowIndex++;
         }
     }
 
