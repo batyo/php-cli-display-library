@@ -1,0 +1,8 @@
+{
+    "name": "batyo/php-cli-display-library",
+    "autoload": {
+        "psr-4": {
+            "CLI\\Display\\": "src/"
+        }
+    }
+}
