@@ -3,6 +3,9 @@
     "autoload": {
         "psr-4": {
             "CLI\\Display\\": "src/"
-        }
+        },
+        "files": [
+            "src/bootstrap.php"
+        ]
     }
 }
