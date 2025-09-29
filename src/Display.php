@@ -115,4 +115,26 @@ class Display
         $style = new Style($color, $bg, $bold);
         return $this->renderer->render($text, $style);
     }
+
+    /**
+     * プログレスバー(進捗バー)を表示
+     * @param int $current 現在値
+     * @param int $total   最大値
+     * @param string $label ラベル
+     * @param int $width バーの幅（デフォルト: 30）
+     * @param Style|null $style バーのスタイル
+     */
+    public function progressBar(int $current, int $total, string $label = '', int $width = 30, ?Style $style = null): void
+    {
+        $percent = ($total > 0) ? min(1, max(0, $current / $total)) : 0;
+        $filled = (int)round($width * $percent);
+        $bar = str_repeat('█', $filled) . str_repeat(' ', $width - $filled);
+        $percentText = sprintf('%3d%%', (int)($percent * 100));
+        $line = sprintf("\r%s [%s] %s/%s %s", $label, $bar, $current, $total, $percentText);
+        echo $this->renderer->render($line, $style);
+        if ($current >= $total) {
+            echo "\n";
+        }
+        flush();
+    }
 }
